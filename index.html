@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tools Logo Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    #landing-page, #game-page, #final-score-page {
+      display: none;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: calc(100% - 20px);
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #logo {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+      margin-bottom: 20px;
+    }
+
+    #result, #final-message {
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- Landing Page -->
+  <div id="landing-page" class="container">
+    <h1>Welcome to AI Tools Logo Quiz</h1>
+    <p>Please enter your name to start:</p>
+    <input type="text" id="user-name" placeholder="Your Name">
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <!-- Game Page -->
+  <div id="game-page" class="container">
+    <h1>Guess the AI Tool Logo</h1>
+    <div id="logo-container">
+      <img id="logo" src="" alt="Logo to Guess">
+    </div>
+    <input type="text" id="user-guess" placeholder="Enter your guess here">
+    <button onclick="checkAnswer()">Submit</button>
+    <div id="result"></div>
+    <p>Score: <span id="score">0</span></p>
+    <button onclick="nextLogo()">Next Logo</button>
+  </div>
+
+  <!-- Final Score Page -->
+  <div id="final-score-page" class="container">
+    <h1>Game Over!</h1>
+    <div id="final-message"></div>
+    <p>Your final score is: <span id="final-score">0</span></p>
+  </div>
+
+  <script>
+    const logos = [
+      { name: "ChatGPT", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/512px-ChatGPT_logo.svg.png" },
+      { name: "Midjourney", image: "https://static.vecteezy.com/system/resources/previews/026/395/639/original/midjourney-logo-icon-free-vector.jpg" }, // Replace with actual URL
+      { name: "Fireflies", image: "https://aitoolmall.com/wp-content/uploads/2023/07/Fireflies-logo.jpg" },   // Replace with actual URL
+      { name: "Runway", image: "https://forgeglobal.com/site/assets/files/24029/runway-logo-500w.png" },         // Replace with actual URL
+      { name: "Podium Ai", image: "https://tool-plate.s3.ap-south-1.amazonaws.com/2632ec42-b6d5-40c7-aadd-433f0718d48d.png" },   // Replace with actual URL
+      { name: "Trint Ai", image: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/35/18/c2/3518c25e-c2d5-251e-de28-29d979f3b5a1/AppIcon-1x_U007emarketing-0-0-0-7-0-0-85-220.png/1200x630wa.png" },     // Replace with actual URL
+      { name: "Opusclip", image: "https://api.iowen.cn/favicon/www.opus.pro.png" },     // Replace with actual URL
+      { name: "Canva", image: "https://th.bing.com/th/id/OIP.gqDw5fEnRBEmYOkxf-hxRQAAAA?rs=1&pid=ImgDetMain" },
+      { name: "Synthesia", image: "https://landingfoliocom.imgix.net/1602988158154-synthesia-logo.png?fit=crop&w=820&crop=top,left" }    // Replace with actual URL
+    ];
+
+    let currentLogoIndex = 0;
+    let score = 0;
+    let userName = '';
+
+    function startGame() {
+      userName = document.getElementById('user-name').value.trim();
+      if (userName === '') {
+        alert('Please enter your name.');
+        return;
+      }
+
+      // Hide landing page and show game page
+      document.getElementById('landing-page').style.display = 'none';
+      document.getElementById('game-page').style.display = 'block';
+
+      // Initialize the first logo
+      document.getElementById('logo').src = logos[currentLogoIndex].image;
+    }
+
+    function checkAnswer() {
+      const userGuess = document.getElementById('user-guess').value.trim().toLowerCase();
+      const correctAnswer = logos[currentLogoIndex].name.toLowerCase();
+
+      if (userGuess === correctAnswer) {
+        document.getElementById('result').textContent = "Correct!";
+        score += 10;  // Increase score by 10 points for a correct answer
+      } else {
+        document.getElementById('result').textContent = `Incorrect! The correct answer was ${logos[currentLogoIndex].name}.`;
+      }
+
+      document.getElementById('score').textContent = score;
+      document.getElementById('user-guess').value = '';  // Clear the input field
+    }
+
+    function nextLogo() {
+      currentLogoIndex++;
+
+      if (currentLogoIndex < logos.length) {
+        document.getElementById('logo').src = logos[currentLogoIndex].image;
+        document.getElementById('result').textContent = '';  // Clear the result
+      } else {
+        showFinalScore();
+      }
+    }
+
+    function showFinalScore() {
+      // Hide game page and show final score page
+      document.getElementById('game-page').style.display = 'none';
+      document.getElementById('final-score-page').style.display = 'block';
+
+      document.getElementById('final-message').textContent = `Thank you for playing, ${userName}!`;
+      document.getElementById('final-score').textContent = score;
+    }
+
+    // Initialize the landing page
+    document.getElementById('landing-page').style.display = 'block';
+  </script>
+</body>
+</html>
