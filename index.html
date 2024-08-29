@@ -7,7 +7,8 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      background: url('https://your-background-image-url.jpg') no-repeat center center fixed; /* Add your background image URL */
+      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -15,14 +16,24 @@
       margin: 0;
     }
 
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    }
+
     .container {
-      text-align: center;
+      position: relative;
       background-color: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       width: 90%;
-      max-width: 400px;
+      max-width: 500px;
+      z-index: 1; /* Ensure the container is above the overlay */
     }
 
     #landing-page, #game-page, #final-score-page {
@@ -33,6 +44,8 @@
       padding: 10px;
       width: calc(100% - 20px);
       margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     button {
@@ -42,6 +55,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
 
     button:hover {
@@ -53,15 +67,23 @@
       height: auto;
       max-height: 200px;
       margin-bottom: 20px;
+      border-radius: 5px;
     }
 
     #result, #final-message {
       margin-bottom: 20px;
       font-weight: bold;
     }
+
+    #score {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+  <div class="overlay"></div>
+
   <!-- Landing Page -->
   <div id="landing-page" class="container">
     <h1>Welcome to AI Tools Logo Quiz</h1>
@@ -93,14 +115,14 @@
   <script>
     const logos = [
       { name: "ChatGPT", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/512px-ChatGPT_logo.svg.png" },
-      { name: "Midjourney", image: "https://static.vecteezy.com/system/resources/previews/026/395/639/original/midjourney-logo-icon-free-vector.jpg" }, // Replace with actual URL
-      { name: "Fireflies", image: "https://aitoolmall.com/wp-content/uploads/2023/07/Fireflies-logo.jpg" },   // Replace with actual URL
-      { name: "Runway", image: "https://forgeglobal.com/site/assets/files/24029/runway-logo-500w.png" },         // Replace with actual URL
-      { name: "Podium Ai", image: "https://tool-plate.s3.ap-south-1.amazonaws.com/2632ec42-b6d5-40c7-aadd-433f0718d48d.png" },   // Replace with actual URL
-      { name: "Trint Ai", image: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/35/18/c2/3518c25e-c2d5-251e-de28-29d979f3b5a1/AppIcon-1x_U007emarketing-0-0-0-7-0-0-85-220.png/1200x630wa.png" },     // Replace with actual URL
-      { name: "Opusclip", image: "https://api.iowen.cn/favicon/www.opus.pro.png" },     // Replace with actual URL
+      { name: "Midjourney", image: "https://static.vecteezy.com/system/resources/previews/026/395/639/original/midjourney-logo-icon-free-vector.jpg" },
+      { name: "Fireflies", image: "https://aitoolmall.com/wp-content/uploads/2023/07/Fireflies-logo.jpg" },
+      { name: "Runway", image: "https://forgeglobal.com/site/assets/files/24029/runway-logo-500w.png" },
+      { name: "Podium Ai", image: "https://tool-plate.s3.ap-south-1.amazonaws.com/2632ec42-b6d5-40c7-aadd-433f0718d48d.png" },
+      { name: "Trint Ai", image: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/35/18/c2/3518c25e-c2d5-251e-de28-29d979f3b5a1/AppIcon-1x_U007emarketing-0-0-0-7-0-0-85-220.png/1200x630wa.png" },
+      { name: "Opusclip", image: "https://api.iowen.cn/favicon/www.opus.pro.png" },
       { name: "Canva", image: "https://th.bing.com/th/id/OIP.gqDw5fEnRBEmYOkxf-hxRQAAAA?rs=1&pid=ImgDetMain" },
-      { name: "Synthesia", image: "https://landingfoliocom.imgix.net/1602988158154-synthesia-logo.png?fit=crop&w=820&crop=top,left" }    // Replace with actual URL
+      { name: "Synthesia", image: "https://landingfoliocom.imgix.net/1602988158154-synthesia-logo.png?fit=crop&w=820&crop=top,left" }
     ];
 
     let currentLogoIndex = 0;
@@ -114,11 +136,8 @@
         return;
       }
 
-      // Hide landing page and show game page
       document.getElementById('landing-page').style.display = 'none';
       document.getElementById('game-page').style.display = 'block';
-
-      // Initialize the first logo
       document.getElementById('logo').src = logos[currentLogoIndex].image;
     }
 
@@ -128,13 +147,14 @@
 
       if (userGuess === correctAnswer) {
         document.getElementById('result').textContent = "Correct!";
-        score += 10;  // Increase score by 10 points for a correct answer
+        score += 10;
+        document.getElementById('score').textContent = score;
+        setTimeout(nextLogo, 1000);  // Move to the next logo after 1 second
       } else {
         document.getElementById('result').textContent = `Incorrect! The correct answer was ${logos[currentLogoIndex].name}.`;
       }
 
-      document.getElementById('score').textContent = score;
-      document.getElementById('user-guess').value = '';  // Clear the input field
+      document.getElementById('user-guess').value = '';
     }
 
     function nextLogo() {
@@ -142,14 +162,13 @@
 
       if (currentLogoIndex < logos.length) {
         document.getElementById('logo').src = logos[currentLogoIndex].image;
-        document.getElementById('result').textContent = '';  // Clear the result
+        document.getElementById('result').textContent = '';
       } else {
         showFinalScore();
       }
     }
 
     function showFinalScore() {
-      // Hide game page and show final score page
       document.getElementById('game-page').style.display = 'none';
       document.getElementById('final-score-page').style.display = 'block';
 
@@ -157,7 +176,6 @@
       document.getElementById('final-score').textContent = score;
     }
 
-    // Initialize the landing page
     document.getElementById('landing-page').style.display = 'block';
   </script>
 </body>
